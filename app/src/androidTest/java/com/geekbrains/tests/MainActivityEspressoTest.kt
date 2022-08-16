@@ -1,6 +1,7 @@
 package com.geekbrains.tests
 
 import android.view.View
+import android.widget.TextView
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
@@ -13,6 +14,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.geekbrains.tests.view.search.MainActivity
 import junit.framework.TestCase
 import org.hamcrest.Matcher
+import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -40,6 +42,31 @@ class MainActivityEspressoTest {
         TestCase.assertEquals(Lifecycle.State.RESUMED, scenario.state)
     }
 
+    @Test
+    fun activityButton_AreEffectiveVisible() {
+        onView(withId(R.id.searchEditText)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+    }
+
+    @Test
+    fun activityTextView_NotNull() {
+        scenario.onActivity {
+            val totalCountTextView = it.findViewById<TextView>(R.id.totalCountTextView)
+            TestCase.assertNotNull(totalCountTextView)
+        }
+    }
+
+    @Test
+    fun activityTextView_HasText() {
+        val assertion = matches(withText("Number of results: %d"))
+        onView(withId(R.id.totalCountTextView)).check(assertion)
+    }
+
+    @Test
+    fun activityTextView_IsNotDisplayed() {
+        onView(withId(R.id.totalCountTextView)).check(matches(not(isDisplayed())))
+    }
+
+    //проверяет сразу EditText и TextView
     @Test
     fun activitySearch_IsWorking() {
         onView(withId(R.id.searchEditText)).perform(click())
