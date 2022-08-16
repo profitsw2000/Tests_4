@@ -1,6 +1,7 @@
 package com.geekbrains.tests
 
 import android.view.View
+import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
@@ -10,6 +11,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.geekbrains.tests.view.search.MainActivity
+import junit.framework.TestCase
 import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
@@ -24,6 +26,18 @@ class MainActivityEspressoTest {
     @Before
     fun setup() {
         scenario = ActivityScenario.launch(MainActivity::class.java)
+    }
+
+    @Test
+    fun activity_AssertNotNull() {
+        scenario.onActivity {
+            TestCase.assertNotNull(it)
+        }
+    }
+
+    @Test
+    fun activity_IsResumed() {
+        TestCase.assertEquals(Lifecycle.State.RESUMED, scenario.state)
     }
 
     @Test
