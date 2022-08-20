@@ -18,13 +18,14 @@ import com.geekbrains.tests.repository.GitHubRepository
 import com.geekbrains.tests.view.details.DetailsActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
+import org.koin.core.qualifier.named
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 
 class MainActivity : AppCompatActivity(), ViewSearchContract {
 
-    private val repository: FakeGitHubRepository by inject()
+    private val repository: FakeGitHubRepository by inject(named("fakeGitHubRepository"))
     private val adapter = SearchResultAdapter()
     private val presenter: PresenterSearchContract = SearchPresenter(this, repository)
     private var totalCount: Int = 0
@@ -66,17 +67,6 @@ class MainActivity : AppCompatActivity(), ViewSearchContract {
             }
             false
         })
-    }
-
-    private fun createRepository(): RepositoryContract {
-        return FakeGitHubRepository()
-    }
-
-    private fun createRetrofit(): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
     }
 
     override fun displaySearchResults(

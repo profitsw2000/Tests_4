@@ -17,8 +17,8 @@ val appModule = module {
         .addConverterFactory(get())
         .build() }
     single<GitHubApi> { get<Retrofit>().create(GitHubApi::class.java) }
-    single<RepositoryContract> { GitHubRepository(get()) }
-    single<RepositoryContract> { FakeGitHubRepository() }
+    single(named("gitHubRepository")) { GitHubRepository(get()) }
+    single(named("fakeGitHubRepository")) { FakeGitHubRepository() }
 
     factory<Converter.Factory> { GsonConverterFactory.create() }
 }

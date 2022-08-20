@@ -8,22 +8,18 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.geekbrains.tests.R
 import com.geekbrains.tests.model.SearchResult
-import com.geekbrains.tests.presenter.RepositoryContract
 import com.geekbrains.tests.presenter.search.PresenterSearchContract
 import com.geekbrains.tests.presenter.search.SearchPresenter
-import com.geekbrains.tests.repository.FakeGitHubRepository
-import com.geekbrains.tests.repository.GitHubApi
 import com.geekbrains.tests.repository.GitHubRepository
 import com.geekbrains.tests.view.details.DetailsActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import org.koin.core.qualifier.named
 import java.util.*
 
 class MainActivity : AppCompatActivity(), ViewSearchContract {
 
-    private val repository: GitHubRepository by inject()
+    private val repository: GitHubRepository by inject(named("gitHubRepository"))
     private val adapter = SearchResultAdapter()
     private val presenter: PresenterSearchContract = SearchPresenter(this, repository)
     private var totalCount: Int = 0
@@ -65,17 +61,6 @@ class MainActivity : AppCompatActivity(), ViewSearchContract {
             }
             false
         })
-    }
-
-    private fun createRepository(): RepositoryContract {
-        return GitHubRepository(createRetrofit().create(GitHubApi::class.java))
-    }
-
-    private fun createRetrofit(): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
     }
 
     override fun displaySearchResults(
